@@ -30,8 +30,9 @@ function CreateIssue() {
         location: "",
       });
     } catch (error) {
-      alert("Something went wrong");
-    }
+  console.log(error);
+  alert(error.response?.data?.message || error.message || "Something went wrong");
+}
   };
 
   return (
