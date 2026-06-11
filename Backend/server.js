@@ -11,11 +11,7 @@ const User = require("./models/User");
 dotenv.config();
 
 const app = express();
-app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
 mongoose
@@ -125,6 +121,29 @@ app.get("/api/issues", async (req, res) => {
     res.json({
       success: true,
       issues,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+app.put("/api/issues/:id", async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    const issue = await Issue.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: "Issue status updated",
+      issue,
     });
   } catch (error) {
     res.status(500).json({
