@@ -9,6 +9,8 @@ function CreateIssue() {
     location: "",
   });
 
+  const [image, setImage] = useState(null);
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -20,7 +22,23 @@ function CreateIssue() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/issues", form);
+      const formData = new FormData();
+
+      formData.append("title", form.title);
+      formData.append("description", form.description);
+      formData.append("category", form.category);
+      formData.append("location", form.location);
+
+      if (image) {
+        formData.append("image", image);
+      }
+
+      await axios.post("http://localhost:5000/api/issues", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       alert("Complaint added successfully");
 
       setForm({
@@ -29,10 +47,16 @@ function CreateIssue() {
         category: "",
         location: "",
       });
+
+      setImage(null);
     } catch (error) {
-  console.log(error);
-  alert(error.response?.data?.message || error.message || "Something went wrong");
-}
+      console.log(error);
+      alert(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong"
+      );
+    }
   };
 
   return (
@@ -41,13 +65,44 @@ function CreateIssue() {
         <h1 style={{ color: "#38bdf8" }}>Raise Complaint</h1>
 
         <form onSubmit={handleSubmit}>
-          <input name="title" placeholder="Issue Title" value={form.title} onChange={handleChange} style={inputStyle} />
+          <input
+            name="title"
+            placeholder="Issue Title"
+            value={form.title}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-          <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} style={inputStyle} />
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-          <input name="category" placeholder="Category e.g. Road, Garbage" value={form.category} onChange={handleChange} style={inputStyle} />
+          <input
+            name="category"
+            placeholder="Category e.g. Road, Garbage"
+            value={form.category}
+            onChange={handleChange}
+            style={inputStyle}
+          />
 
-          <input name="location" placeholder="Location" value={form.location} onChange={handleChange} style={inputStyle} />
+          <input
+            name="location"
+            placeholder="Location"
+            value={form.location}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            style={fileInputStyle}
+          />
 
           <button style={buttonStyle}>Submit Complaint</button>
         </form>
@@ -80,6 +135,18 @@ const inputStyle = {
   border: "1px solid #475569",
   background: "#334155",
   color: "white",
+  boxSizing: "border-box",
+};
+
+const fileInputStyle = {
+  width: "100%",
+  padding: "12px",
+  marginBottom: "15px",
+  borderRadius: "8px",
+  border: "1px solid #475569",
+  background: "#334155",
+  color: "white",
+  boxSizing: "border-box",
 };
 
 const buttonStyle = {

@@ -6,6 +6,8 @@ const issueSchema = new mongoose.Schema(
     description: String,
     category: String,
     location: String,
+    image: String,
+
     status: {
       type: String,
       default: "Pending",

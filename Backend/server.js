@@ -1,3 +1,5 @@
+const multer = require("multer");
+const path = require("path");
 const cors = require("cors");
 const Issue = require("./models/Issue");
 const protect = require("./middleware/authMiddleware");
@@ -13,11 +15,23 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
+
+  const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
 
 app.get("/", (req, res) => {
   res.send("Home working");
@@ -97,9 +111,20 @@ app.get("/api/auth/profile", protect, (req, res) => {
   });
 });
 
-app.post("/api/issues", async (req, res) => {
+app.post("/api/issues", upload.single("image"), async (req, res) => {
   try {
-    const issue = await Issue.create(req.body);
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+    
+    const { title, description, category, location } = req.body;
+
+    const issue = await Issue.create({
+      title,
+      description,
+      category,
+      location,
+      image: req.file ? `/uploads/${req.file.filename}` : "",
+    });
 
     res.status(201).json({
       success: true,
@@ -113,6 +138,7 @@ app.post("/api/issues", async (req, res) => {
     });
   }
 });
+
 
 app.get("/api/issues", async (req, res) => {
   try {

@@ -4,8 +4,10 @@ import axios from "axios";
 
 function Dashboard() {
   const navigate = useNavigate();
+
   const [issues, setIssues] = useState([]);
   const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("All");
 
   const fetchIssues = async () => {
     try {
@@ -29,13 +31,13 @@ function Dashboard() {
   };
 
   const deleteIssue = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this complaint?"
+    );
+
+    if (!confirmDelete) return;
+
     try {
-      const confirmDelete = window.confirm(
-        "Are you sure you want to delete this complaint?"
-      );
-
-      if (!confirmDelete) return;
-
       await axios.delete(`http://localhost:5000/api/issues/${id}`);
 
       alert("Complaint deleted successfully");
@@ -54,12 +56,20 @@ function Dashboard() {
   const progressCount = issues.filter((i) => i.status === "In Progress").length;
   const resolvedCount = issues.filter((i) => i.status === "Resolved").length;
 
-  const filteredIssues = issues.filter((issue) =>
-  issue.title.toLowerCase().includes(search.toLowerCase()) ||
-  issue.description.toLowerCase().includes(search.toLowerCase()) ||
-  issue.category.toLowerCase().includes(search.toLowerCase()) ||
-  issue.location.toLowerCase().includes(search.toLowerCase())
-);
+  const filteredIssues = issues.filter((issue) => {
+    const text = search.toLowerCase();
+
+    const matchesSearch =
+      issue.title.toLowerCase().includes(text) ||
+      issue.description.toLowerCase().includes(text) ||
+      issue.category.toLowerCase().includes(text) ||
+      issue.location.toLowerCase().includes(text);
+
+    const matchesStatus =
+      filterStatus === "All" || issue.status === filterStatus;
+
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div style={page}>
@@ -109,50 +119,74 @@ function Dashboard() {
       </div>
 
       <h2 style={{ marginTop: "35px" }}>Recent Complaints</h2>
-     
-<input
-  type="text"
-  placeholder="Search complaints..."
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-  style={searchInput}
-/>
 
-    {filteredIssues.map((issue) => (
-        <div key={issue._id} style={issueCard}>
-          <div style={cardHeader}>
-            <h3>{issue.title}</h3>
-            <span style={getBadgeStyle(issue.status)}>{issue.status}</span>
+      <div style={filterBox}>
+        <input
+          type="text"
+          placeholder="Search complaints..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={searchInput}
+        />
+
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          style={filterSelect}
+        >
+          <option>All</option>
+          <option>Pending</option>
+          <option>In Progress</option>
+          <option>Resolved</option>
+        </select>
+      </div>
+
+      {filteredIssues.length === 0 ? (
+        <p style={{ color: "#94a3b8", marginTop: "20px" }}>
+          No complaints found.
+        </p>
+      ) : (
+        filteredIssues.map((issue) => (
+          <div key={issue._id} style={issueCard}>
+            <div style={cardHeader}>
+              <h3>{issue.title}</h3>
+              <span style={getBadgeStyle(issue.status)}>{issue.status}</span>
+            </div>
+
+            <p>{issue.description}</p>
+
+   {issue.image && (
+  <img
+    src={`http://localhost:5000${issue.image}`}
+    alt="Complaint"
+    style={imageStyle}
+  />
+)}
+
+            <p>
+              <b>Category:</b> {issue.category}
+            </p>
+
+            <p>
+              <b>Location:</b> {issue.location}
+            </p>
+
+            <select
+              value={issue.status}
+              onChange={(e) => updateStatus(issue._id, e.target.value)}
+              style={selectStyle}
+            >
+              <option>Pending</option>
+              <option>In Progress</option>
+              <option>Resolved</option>
+            </select>
+
+            <button onClick={() => deleteIssue(issue._id)} style={deleteBtn}>
+              Delete Complaint
+            </button>
           </div>
-
-          <p>{issue.description}</p>
-
-          <p>
-            <b>Category:</b> {issue.category}
-          </p>
-
-          <p>
-            <b>Location:</b> {issue.location}
-          </p>
-
-          <select
-            value={issue.status}
-            onChange={(e) => updateStatus(issue._id, e.target.value)}
-            style={selectStyle}
-          >
-            <option>Pending</option>
-            <option>In Progress</option>
-            <option>Resolved</option>
-          </select>
-
-          <button
-            onClick={() => deleteIssue(issue._id)}
-            style={deleteBtn}
-          >
-            Delete Complaint
-          </button>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
@@ -240,6 +274,31 @@ const number = {
   color: "#38bdf8",
 };
 
+const filterBox = {
+  display: "flex",
+  gap: "12px",
+  marginBottom: "20px",
+  flexWrap: "wrap",
+};
+
+const searchInput = {
+  width: "100%",
+  maxWidth: "500px",
+  padding: "12px",
+  borderRadius: "8px",
+  border: "1px solid #475569",
+  background: "#334155",
+  color: "white",
+};
+
+const filterSelect = {
+  padding: "12px",
+  borderRadius: "8px",
+  border: "1px solid #475569",
+  background: "#334155",
+  color: "white",
+};
+
 const issueCard = {
   background: "#1e293b",
   padding: "20px",
@@ -262,6 +321,14 @@ const selectStyle = {
   color: "white",
 };
 
+const imageStyle = {
+  width: "100%",
+  maxWidth: "350px",
+  borderRadius: "12px",
+  marginTop: "10px",
+  marginBottom: "10px",
+};
+
 const deleteBtn = {
   marginTop: "12px",
   marginLeft: "12px",
@@ -271,16 +338,6 @@ const deleteBtn = {
   background: "#ef4444",
   color: "white",
   cursor: "pointer",
-};
-const searchInput = {
-  width: "100%",
-  maxWidth: "500px",
-  padding: "12px",
-  borderRadius: "8px",
-  border: "1px solid #475569",
-  background: "#334155",
-  color: "white",
-  marginBottom: "20px",
 };
 
 export default Dashboard;
