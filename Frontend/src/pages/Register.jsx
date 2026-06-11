@@ -22,14 +22,15 @@ function Register() {
       const res = await axios.post("http://localhost:5000/api/auth/register", form);
       alert(res.data.message);
     } catch (error) {
-      alert("Registration failed");
+      alert(error.response?.data?.message || "Registration failed");
     }
   };
 
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
-        <h1 style={{ color: "#38bdf8", marginBottom: "30px" }}>CivicVoice</h1>
+        <h1 style={{ color: "#38bdf8", marginBottom: "10px" }}>CivicVoice</h1>
+        <p style={{ color: "#94a3b8", marginBottom: "25px" }}>Create your account</p>
 
         <form onSubmit={handleRegister}>
           <input
@@ -59,7 +60,11 @@ function Register() {
             style={inputStyle}
           />
 
-          <button style={buttonStyle}>Register</button>
+          <button type="submit" style={buttonStyle}>Register</button>
+
+          <button type="button" style={googleBtn}>
+            Continue with Google
+          </button>
         </form>
       </div>
     </div>
@@ -91,6 +96,7 @@ const inputStyle = {
   border: "1px solid #475569",
   background: "#334155",
   color: "white",
+  boxSizing: "border-box",
 };
 
 const buttonStyle = {
@@ -100,6 +106,18 @@ const buttonStyle = {
   borderRadius: "8px",
   background: "#0ea5e9",
   color: "white",
+  fontSize: "16px",
+  cursor: "pointer",
+};
+
+const googleBtn = {
+  width: "100%",
+  padding: "12px",
+  marginTop: "12px",
+  border: "1px solid #475569",
+  borderRadius: "8px",
+  background: "white",
+  color: "#0f172a",
   fontSize: "16px",
   cursor: "pointer",
 };

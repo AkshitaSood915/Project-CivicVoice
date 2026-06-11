@@ -4,131 +4,145 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div style={page}>
-      <nav style={nav}>
-        <h2 style={logo}>CivicVoice</h2>
+    <>
+      <style>
+        {`
+          @media (max-width: 900px) {
+            .home-page {
+              padding: 22px !important;
+            }
 
-        <div style={navLinks}>
-          <button style={navTextBtn} onClick={() => navigate("/home")}>
-            Home
-          </button>
-          <button style={navTextBtn} onClick={() => navigate("/")}>
-            Login
-          </button>
-          <button style={primaryBtn} onClick={() => navigate("/register")}>
-            Register
-          </button>
-        </div>
-      </nav>
+            .home-nav {
+              flex-direction: column;
+              gap: 18px;
+            }
 
-      <section style={hero}>
-        <div style={heroLeft}>
-          <p style={tag}>Smart Civic Complaint Platform</p>
+            .home-hero {
+              grid-template-columns: 1fr !important;
+              margin-top: 55px !important;
+              gap: 40px !important;
+            }
 
-          <h1 style={title}>
-            Report Civic Issues.
-            <br />
-            Build Better Cities.
-          </h1>
+            .home-title {
+              font-size: 42px !important;
+            }
 
-          <p style={subtitle}>
-            Report potholes, broken street lights, garbage dumps, water leakage
-            and other civic problems through one simple platform.
-          </p>
+            .home-grid {
+              grid-template-columns: 1fr !important;
+            }
 
-          <div style={buttonGroup}>
-            <button style={mainBtn} onClick={() => navigate("/register")}>
-              Get Started
+            .home-buttons {
+              flex-direction: column;
+            }
+
+            .home-buttons button {
+              width: 100%;
+            }
+          }
+
+          @media (max-width: 500px) {
+            .home-title {
+              font-size: 34px !important;
+            }
+
+            .home-subtitle {
+              font-size: 16px !important;
+            }
+
+            .home-nav-links {
+              flex-wrap: wrap;
+              justify-content: center;
+            }
+          }
+        `}
+      </style>
+
+      <div className="home-page" style={page}>
+        <nav className="home-nav" style={nav}>
+          <h2 style={logo}>CivicVoice</h2>
+
+          <div className="home-nav-links" style={navLinks}>
+            <button style={navTextBtn} onClick={() => navigate("/home")}>
+              Home
             </button>
-            <button style={outlineBtn} onClick={() => navigate("/")}>
-              Login Now
+
+            <button style={navTextBtn} onClick={() => navigate("/profile")}>
+              Profile
+            </button>
+
+            <button style={navTextBtn} onClick={() => navigate("/")}>
+              Login
+            </button>
+
+            <button style={primaryBtn} onClick={() => navigate("/register")}>
+              Register
             </button>
           </div>
-        </div>
+        </nav>
 
-        <div style={heroCard}>
-          <h2 style={cardHeading}>Popular Issues</h2>
-          <p style={issueItem}>🛣️ Potholes & road damage</p>
-          <p style={issueItem}>💡 Broken street lights</p>
-          <p style={issueItem}>🚮 Garbage collection issues</p>
-          <p style={issueItem}>💧 Water leakage problems</p>
-          <p style={issueItem}>🚦 Traffic signal complaints</p>
-        </div>
-      </section>
+        <section className="home-hero" style={hero}>
+          <div>
+            <p style={tag}>Smart Civic Complaint Platform</p>
 
-      <section style={howSection}>
-        <h2 style={sectionTitle}>How It Works</h2>
+            <h1 className="home-title" style={title}>
+              Report Civic Issues.
+              <br />
+              Build Better Cities.
+            </h1>
 
-        <div style={grid3}>
-          <div style={infoCard}>
-            <h3>1. Report Issue</h3>
-            <p>
-              Citizens submit civic issues with title, description, category and
-              location.
+            <p className="home-subtitle" style={subtitle}>
+              Report potholes, broken street lights, garbage dumps, water leakage
+              and other civic problems through one simple platform.
             </p>
+
+            <div className="home-buttons" style={buttonGroup}>
+              <button style={mainBtn} onClick={() => navigate("/register")}>
+                Get Started
+              </button>
+
+              <button style={outlineBtn} onClick={() => navigate("/")}>
+                Login Now
+              </button>
+            </div>
           </div>
 
-          <div style={infoCard}>
-            <h3>2. Track Status</h3>
-            <p>
-              Complaints are visible on the dashboard with their current status.
-            </p>
+          <div style={heroCard}>
+            <h2 style={cardHeading}>Popular Issues</h2>
+            <p style={issueItem}>🛣️ Potholes & road damage</p>
+            <p style={issueItem}>💡 Broken street lights</p>
+            <p style={issueItem}>🚮 Garbage collection issues</p>
+            <p style={issueItem}>💧 Water leakage problems</p>
+            <p style={issueItem}>🚦 Traffic signal complaints</p>
           </div>
+        </section>
 
-          <div style={infoCard}>
-            <h3>3. Improve City</h3>
-            <p>
-              Authorities can monitor complaints and work towards better public
-              services.
-            </p>
+        <section style={howSection}>
+          <h2 style={sectionTitle}>How It Works</h2>
+
+          <div className="home-grid" style={grid3}>
+            <div style={infoCard}>
+              <h3>1. Report Issue</h3>
+              <p>Citizens submit civic issues with title, category and location.</p>
+            </div>
+
+            <div style={infoCard}>
+              <h3>2. Track Status</h3>
+              <p>Complaints are visible on the dashboard with current status.</p>
+            </div>
+
+            <div style={infoCard}>
+              <h3>3. Improve City</h3>
+              <p>Authorities can monitor issues and improve public services.</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section style={featuresSection}>
-        <h2 style={sectionTitle}>Key Features</h2>
-
-        <div style={grid3}>
-          <div style={infoCard}>
-            <h3>Quick Reporting</h3>
-            <p>Raise complaints easily through a simple form.</p>
-          </div>
-
-          <div style={infoCard}>
-            <h3>Smart Dashboard</h3>
-            <p>View total complaints, pending issues and recent reports.</p>
-          </div>
-
-          <div style={infoCard}>
-            <h3>Transparent Tracking</h3>
-            <p>Every issue has a visible status for better transparency.</p>
-          </div>
-        </div>
-      </section>
-
-      <section style={statsSection}>
-        <div style={statCard}>
-          <h2>100+</h2>
-          <p>Issues can be reported</p>
-        </div>
-
-        <div style={statCard}>
-          <h2>24/7</h2>
-          <p>Citizen access</p>
-        </div>
-
-        <div style={statCard}>
-          <h2>Fast</h2>
-          <p>Complaint submission</p>
-        </div>
-      </section>
-
-      <footer style={footer}>
-        <h2 style={logo}>CivicVoice</h2>
-        <p>Making civic issue reporting simple, transparent and citizen-friendly.</p>
-        <p style={{ color: "#64748b" }}>© 2026 CivicVoice. All rights reserved.</p>
-      </footer>
-    </div>
+        <footer style={footer}>
+          <h2 style={logo}>CivicVoice</h2>
+          <p>Making civic issue reporting simple and transparent.</p>
+        </footer>
+      </div>
+    </>
   );
 }
 
@@ -185,10 +199,6 @@ const hero = {
   gridTemplateColumns: "1.3fr 0.9fr",
   gap: "70px",
   alignItems: "center",
-};
-
-const heroLeft = {
-  textAlign: "left",
 };
 
 const tag = {
@@ -256,18 +266,11 @@ const issueItem = {
   padding: "14px 16px",
   borderRadius: "12px",
   marginBottom: "14px",
-  color: "#e2e8f0",
 };
 
 const howSection = {
   maxWidth: "1200px",
   margin: "100px auto 0",
-  textAlign: "center",
-};
-
-const featuresSection = {
-  maxWidth: "1200px",
-  margin: "90px auto 0",
   textAlign: "center",
 };
 
@@ -286,31 +289,13 @@ const infoCard = {
   background: "#1e293b",
   padding: "28px",
   borderRadius: "18px",
-  border: "1px solid rgba(148, 163, 184, 0.15)",
   textAlign: "left",
-};
-
-const statsSection = {
-  maxWidth: "1200px",
-  margin: "90px auto 0",
-  display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gap: "24px",
-};
-
-const statCard = {
-  background: "#0ea5e9",
-  color: "#020617",
-  padding: "28px",
-  borderRadius: "18px",
-  textAlign: "center",
-  fontWeight: "700",
 };
 
 const footer = {
   maxWidth: "1200px",
-  margin: "100px auto 0",
-  padding: "40px 0",
+  margin: "90px auto 0",
+  padding: "35px 0",
   borderTop: "1px solid rgba(148, 163, 184, 0.2)",
   textAlign: "center",
   color: "#cbd5e1",
