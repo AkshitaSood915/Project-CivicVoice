@@ -10,14 +10,17 @@ function Dashboard() {
     try {
       const res = await axios.get("http://localhost:5000/api/issues");
       setIssues(res.data.issues);
-    } catch {
-      alert("Failed to load complaints");
-    }
+    }  catch (error) {
+  console.log("Dashboard error:", error);
+  alert(error.message);
+}
+console.log(window.location.origin);
   };
 
   useEffect(() => {
-    fetchIssues();
-  }, []);
+  console.log(window.location.origin);
+  fetchIssues();
+}, []);
 
   return (
     <div style={page}>
