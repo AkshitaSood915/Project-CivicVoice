@@ -153,6 +153,22 @@ app.put("/api/issues/:id", async (req, res) => {
   }
 });
 
+app.delete("/api/issues/:id", async (req, res) => {
+  try {
+    await Issue.findByIdAndDelete(req.params.id);
+
+    res.json({
+      success: true,
+      message: "Complaint deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
 app.listen(5000, () => {
   console.log("Server started on port 5000");
 });

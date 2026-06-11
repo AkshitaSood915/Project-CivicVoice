@@ -5,6 +5,7 @@ import axios from "axios";
 function Dashboard() {
   const navigate = useNavigate();
   const [issues, setIssues] = useState([]);
+  const [search, setSearch] = useState("");
 
   const fetchIssues = async () => {
     try {
@@ -27,6 +28,24 @@ function Dashboard() {
     }
   };
 
+  const deleteIssue = async (id) => {
+    try {
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this complaint?"
+      );
+
+      if (!confirmDelete) return;
+
+      await axios.delete(`http://localhost:5000/api/issues/${id}`);
+
+      alert("Complaint deleted successfully");
+
+      fetchIssues();
+    } catch (error) {
+      alert("Delete failed");
+    }
+  };
+
   useEffect(() => {
     fetchIssues();
   }, []);
@@ -34,6 +53,13 @@ function Dashboard() {
   const pendingCount = issues.filter((i) => i.status === "Pending").length;
   const progressCount = issues.filter((i) => i.status === "In Progress").length;
   const resolvedCount = issues.filter((i) => i.status === "Resolved").length;
+
+  const filteredIssues = issues.filter((issue) =>
+  issue.title.toLowerCase().includes(search.toLowerCase()) ||
+  issue.description.toLowerCase().includes(search.toLowerCase()) ||
+  issue.category.toLowerCase().includes(search.toLowerCase()) ||
+  issue.location.toLowerCase().includes(search.toLowerCase())
+);
 
   return (
     <div style={page}>
@@ -83,8 +109,16 @@ function Dashboard() {
       </div>
 
       <h2 style={{ marginTop: "35px" }}>Recent Complaints</h2>
+     
+<input
+  type="text"
+  placeholder="Search complaints..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  style={searchInput}
+/>
 
-      {issues.map((issue) => (
+    {filteredIssues.map((issue) => (
         <div key={issue._id} style={issueCard}>
           <div style={cardHeader}>
             <h3>{issue.title}</h3>
@@ -92,9 +126,11 @@ function Dashboard() {
           </div>
 
           <p>{issue.description}</p>
+
           <p>
             <b>Category:</b> {issue.category}
           </p>
+
           <p>
             <b>Location:</b> {issue.location}
           </p>
@@ -108,6 +144,13 @@ function Dashboard() {
             <option>In Progress</option>
             <option>Resolved</option>
           </select>
+
+          <button
+            onClick={() => deleteIssue(issue._id)}
+            style={deleteBtn}
+          >
+            Delete Complaint
+          </button>
         </div>
       ))}
     </div>
@@ -217,6 +260,27 @@ const selectStyle = {
   border: "none",
   background: "#334155",
   color: "white",
+};
+
+const deleteBtn = {
+  marginTop: "12px",
+  marginLeft: "12px",
+  padding: "10px 14px",
+  borderRadius: "8px",
+  border: "none",
+  background: "#ef4444",
+  color: "white",
+  cursor: "pointer",
+};
+const searchInput = {
+  width: "100%",
+  maxWidth: "500px",
+  padding: "12px",
+  borderRadius: "8px",
+  border: "1px solid #475569",
+  background: "#334155",
+  color: "white",
+  marginBottom: "20px",
 };
 
 export default Dashboard;
