@@ -3,6 +3,8 @@ import { useState } from "react";
 import axios from "axios";
 
 function Login() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -19,26 +21,42 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", form);
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        form
+      );
 
       localStorage.setItem("token", res.data.token);
 
+      alert("Login Successful");
+
       navigate("/dashboard");
     } catch (error) {
-      alert("Login failed");
+      console.log(error);
+
+      alert(
+        error.response?.data?.message ||
+          error.message ||
+          "Login failed"
+      );
     }
   };
 
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
-        <h1 style={{ color: "#38bdf8", marginBottom: "10px" }}>CivicVoice</h1>
-        <p style={{ color: "#94a3b8", marginBottom: "25px" }}>Login to continue</p>
+        <h1 style={{ color: "#38bdf8", marginBottom: "10px" }}>
+          CivicVoice
+        </h1>
+
+        <p style={{ color: "#94a3b8", marginBottom: "25px" }}>
+          Login to continue
+        </p>
 
         <form onSubmit={handleLogin}>
           <input
-            name="email"
             type="email"
+            name="email"
             placeholder="Enter Email"
             value={form.email}
             onChange={handleChange}
@@ -46,15 +64,17 @@ function Login() {
           />
 
           <input
-            name="password"
             type="password"
+            name="password"
             placeholder="Enter Password"
             value={form.password}
             onChange={handleChange}
             style={inputStyle}
           />
 
-          <button style={buttonStyle}>Login</button>
+          <button type="submit" style={buttonStyle}>
+            Login
+          </button>
         </form>
       </div>
     </div>
@@ -86,6 +106,7 @@ const inputStyle = {
   border: "1px solid #475569",
   background: "#334155",
   color: "white",
+  boxSizing: "border-box",
 };
 
 const buttonStyle = {

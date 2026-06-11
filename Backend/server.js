@@ -1,3 +1,4 @@
+const cors = require("cors");
 const Issue = require("./models/Issue");
 const protect = require("./middleware/authMiddleware");
 const jwt = require("jsonwebtoken");
@@ -10,6 +11,7 @@ const User = require("./models/User");
 dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 mongoose

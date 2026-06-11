@@ -1,4 +1,8 @@
+import { useNavigate } from "react-router-dom";
+
 function Dashboard() {
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -6,6 +10,7 @@ function Dashboard() {
         background: "#0f172a",
         color: "white",
         padding: "30px",
+        textAlign: "center",
       }}
     >
       <h1>CivicVoice Dashboard</h1>
@@ -23,14 +28,16 @@ function Dashboard() {
       </div>
 
       <button
+        onClick={() => navigate("/create-issue")}
         style={{
-          marginTop: "20px",
-          padding: "10px 20px",
+          marginTop: "25px",
+          padding: "12px 25px",
           background: "#0ea5e9",
           border: "none",
           color: "white",
           borderRadius: "8px",
           cursor: "pointer",
+          fontSize: "16px",
         }}
       >
         Raise New Complaint
