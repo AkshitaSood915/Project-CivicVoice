@@ -10,7 +10,7 @@ function Dashboard() {
     try {
       const res = await axios.get("http://localhost:5000/api/issues");
       setIssues(res.data.issues);
-    } catch (error) {
+    } catch {
       alert("Failed to load complaints");
     }
   };
@@ -20,19 +20,34 @@ function Dashboard() {
   }, []);
 
   return (
-    <div style={pageStyle}>
-      <h1>CivicVoice Dashboard</h1>
+    <div style={page}>
+      <nav style={nav}>
+        <h2 style={{ color: "#38bdf8" }}>CivicVoice</h2>
+        <button style={navBtn} onClick={() => navigate("/create-issue")}>
+          Raise Complaint
+        </button>
+      </nav>
 
-      <div style={countCard}>
-        <h2>Total Complaints</h2>
-        <p style={{ fontSize: "28px" }}>{issues.length}</p>
+      <section style={hero}>
+        <h1>Smart Civic Complaint Dashboard</h1>
+        <p>Report, track and monitor public issues in one place.</p>
+      </section>
+
+      <div style={stats}>
+        <div style={card}>
+          <h3>Total Complaints</h3>
+          <p style={number}>{issues.length}</p>
+        </div>
+
+        <div style={card}>
+          <h3>Pending</h3>
+          <p style={number}>
+            {issues.filter((i) => i.status === "Pending").length}
+          </p>
+        </div>
       </div>
 
-      <button onClick={() => navigate("/create-issue")} style={buttonStyle}>
-        Raise New Complaint
-      </button>
-
-      <h2 style={{ marginTop: "30px" }}>All Complaints</h2>
+      <h2 style={{ marginTop: "30px" }}>Recent Complaints</h2>
 
       {issues.map((issue) => (
         <div key={issue._id} style={issueCard}>
@@ -40,46 +55,75 @@ function Dashboard() {
           <p>{issue.description}</p>
           <p><b>Category:</b> {issue.category}</p>
           <p><b>Location:</b> {issue.location}</p>
-          <p><b>Status:</b> {issue.status}</p>
+          <span style={badge}>{issue.status}</span>
         </div>
       ))}
     </div>
   );
 }
 
-const pageStyle = {
+const page = {
   minHeight: "100vh",
   background: "#0f172a",
   color: "white",
-  padding: "30px",
+  padding: "25px",
+};
+
+const nav = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+
+const navBtn = {
+  background: "#0ea5e9",
+  color: "white",
+  border: "none",
+  padding: "10px 18px",
+  borderRadius: "8px",
+  cursor: "pointer",
+};
+
+const hero = {
+  background: "#1e293b",
+  padding: "35px",
+  borderRadius: "15px",
+  marginTop: "25px",
   textAlign: "center",
 };
 
-const countCard = {
+const stats = {
+  display: "flex",
+  gap: "20px",
+  marginTop: "25px",
+};
+
+const card = {
   background: "#1e293b",
   padding: "20px",
-  borderRadius: "10px",
-  marginTop: "20px",
+  borderRadius: "12px",
+  flex: 1,
+  textAlign: "center",
+};
+
+const number = {
+  fontSize: "32px",
+  color: "#38bdf8",
 };
 
 const issueCard = {
   background: "#1e293b",
-  padding: "18px",
-  borderRadius: "10px",
-  margin: "15px auto",
-  maxWidth: "600px",
-  textAlign: "left",
+  padding: "20px",
+  borderRadius: "12px",
+  marginTop: "15px",
 };
 
-const buttonStyle = {
-  marginTop: "25px",
-  padding: "12px 25px",
-  background: "#0ea5e9",
-  border: "none",
-  color: "white",
-  borderRadius: "8px",
-  cursor: "pointer",
-  fontSize: "16px",
+const badge = {
+  background: "#facc15",
+  color: "#111827",
+  padding: "6px 12px",
+  borderRadius: "20px",
+  fontWeight: "bold",
 };
 
 export default Dashboard;
