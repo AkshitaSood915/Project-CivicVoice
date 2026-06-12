@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -91,9 +92,23 @@ function Dashboard() {
             Raise Complaint
           </button>
 
-          <button style={logoutBtn} onClick={() => navigate("/")}>
-            Logout
-          </button>
+   <button
+  style={logoutBtn}
+  onClick={() => {
+    localStorage.removeItem("token");
+
+    toast.success("Logged out successfully");
+
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
+  }}
+>
+  Logout
+</button>
+          
+          
+
         </div>
       </nav>
 
