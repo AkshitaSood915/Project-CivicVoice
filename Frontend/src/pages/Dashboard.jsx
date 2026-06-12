@@ -12,7 +12,7 @@ function Dashboard() {
   const fetchIssues = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/issues");
-      setIssues(res.data.issues);
+      setIssues(res.data.issues || []);
     } catch (error) {
       alert(error.message);
     }
@@ -20,12 +20,9 @@ function Dashboard() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/issues/${id}`, {
-        status,
-      });
-
+      await axios.put(`http://localhost:5000/api/issues/${id}`, { status });
       fetchIssues();
-    } catch (error) {
+    } catch {
       alert("Status update failed");
     }
   };
@@ -39,11 +36,9 @@ function Dashboard() {
 
     try {
       await axios.delete(`http://localhost:5000/api/issues/${id}`);
-
       alert("Complaint deleted successfully");
-
       fetchIssues();
-    } catch (error) {
+    } catch {
       alert("Delete failed");
     }
   };
@@ -56,14 +51,25 @@ function Dashboard() {
   const progressCount = issues.filter((i) => i.status === "In Progress").length;
   const resolvedCount = issues.filter((i) => i.status === "Resolved").length;
 
+  const categoryCounts = issues.reduce((acc, issue) => {
+    const category = issue.category || "Other";
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, {});
+
   const filteredIssues = issues.filter((issue) => {
     const text = search.toLowerCase();
 
+    const title = issue.title || "";
+    const description = issue.description || "";
+    const category = issue.category || "";
+    const location = issue.location || "";
+
     const matchesSearch =
-      issue.title.toLowerCase().includes(text) ||
-      issue.description.toLowerCase().includes(text) ||
-      issue.category.toLowerCase().includes(text) ||
-      issue.location.toLowerCase().includes(text);
+      title.toLowerCase().includes(text) ||
+      description.toLowerCase().includes(text) ||
+      category.toLowerCase().includes(text) ||
+      location.toLowerCase().includes(text);
 
     const matchesStatus =
       filterStatus === "All" || issue.status === filterStatus;
@@ -118,6 +124,19 @@ function Dashboard() {
         </div>
       </div>
 
+      <section style={categorySection}>
+        <h2>Category Analytics</h2>
+
+        <div style={categoryGrid}>
+          {Object.entries(categoryCounts).map(([category, count]) => (
+            <div key={category} style={categoryCard}>
+              <h3>{category}</h3>
+              <p style={categoryNumber}>{count}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <h2 style={{ marginTop: "35px" }}>Recent Complaints</h2>
 
       <div style={filterBox}>
@@ -149,26 +168,26 @@ function Dashboard() {
         filteredIssues.map((issue) => (
           <div key={issue._id} style={issueCard}>
             <div style={cardHeader}>
-              <h3>{issue.title}</h3>
+              <h3>{issue.title || "Untitled Issue"}</h3>
               <span style={getBadgeStyle(issue.status)}>{issue.status}</span>
             </div>
 
             <p>{issue.description}</p>
 
-   {issue.image && (
-  <img
-    src={`http://localhost:5000${issue.image}`}
-    alt="Complaint"
-    style={imageStyle}
-  />
-)}
+            {issue.image && (
+              <img
+                src={`http://localhost:5000${issue.image}`}
+                alt="Complaint"
+                style={imageStyle}
+              />
+            )}
 
             <p>
-              <b>Category:</b> {issue.category}
+              <b>Category:</b> {issue.category || "Other"}
             </p>
 
             <p>
-              <b>Location:</b> {issue.location}
+              <b>Location:</b> {issue.location || "Not provided"}
             </p>
 
             <select
@@ -272,6 +291,31 @@ const card = {
 const number = {
   fontSize: "32px",
   color: "#38bdf8",
+};
+
+const categorySection = {
+  marginTop: "35px",
+};
+
+const categoryGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "18px",
+  marginTop: "18px",
+};
+
+const categoryCard = {
+  background: "#1e293b",
+  padding: "18px",
+  borderRadius: "12px",
+  textAlign: "center",
+  border: "1px solid rgba(56,189,248,0.2)",
+};
+
+const categoryNumber = {
+  fontSize: "28px",
+  color: "#38bdf8",
+  fontWeight: "bold",
 };
 
 const filterBox = {
