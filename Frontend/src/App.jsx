@@ -6,14 +6,15 @@ import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import CreateIssue from "./pages/CreateIssue";
 import Profile from "./pages/Profile";
-import ProtectedRoute from "./ProtectedRoute.jsx";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
+
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
         <Route

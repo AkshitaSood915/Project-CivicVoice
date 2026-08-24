@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function CreateIssue() {
   const [form, setForm] = useState({
@@ -33,13 +34,9 @@ function CreateIssue() {
         formData.append("image", image);
       }
 
-      await axios.post("http://localhost:5000/api/issues", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post("http://localhost:5000/api/issues", formData);
 
-      alert("Complaint added successfully");
+      toast.success("Complaint added successfully");
 
       setForm({
         title: "",
@@ -49,9 +46,11 @@ function CreateIssue() {
       });
 
       setImage(null);
+      e.target.reset();
     } catch (error) {
       console.log(error);
-      alert(
+
+      toast.error(
         error.response?.data?.message ||
           error.message ||
           "Something went wrong"
@@ -62,7 +61,8 @@ function CreateIssue() {
   return (
     <div style={pageStyle}>
       <div style={cardStyle}>
-        <h1 style={{ color: "#38bdf8" }}>Raise Complaint</h1>
+        <h1 style={headingStyle}>Raise Complaint</h1>
+        <p style={subText}>Report civic issues with details and photo proof.</p>
 
         <form onSubmit={handleSubmit}>
           <input
@@ -71,6 +71,7 @@ function CreateIssue() {
             value={form.title}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
 
           <textarea
@@ -78,15 +79,17 @@ function CreateIssue() {
             placeholder="Description"
             value={form.description}
             onChange={handleChange}
-            style={inputStyle}
+            style={textareaStyle}
+            required
           />
 
           <input
             name="category"
-            placeholder="Category e.g. Road, Garbage"
+            placeholder="Category e.g. Road, Garbage, Street Lights"
             value={form.category}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
 
           <input
@@ -95,7 +98,10 @@ function CreateIssue() {
             value={form.location}
             onChange={handleChange}
             style={inputStyle}
+            required
           />
+
+          <label style={labelStyle}>Upload Issue Image</label>
 
           <input
             type="file"
@@ -104,7 +110,9 @@ function CreateIssue() {
             style={fileInputStyle}
           />
 
-          <button style={buttonStyle}>Submit Complaint</button>
+          <button type="submit" style={buttonStyle}>
+            Submit Complaint
+          </button>
         </form>
       </div>
     </div>
@@ -117,14 +125,26 @@ const pageStyle = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
+  padding: "25px",
 };
 
 const cardStyle = {
   background: "#1e293b",
   padding: "35px",
-  borderRadius: "15px",
-  width: "420px",
+  borderRadius: "18px",
+  width: "430px",
   textAlign: "center",
+  boxShadow: "0 0 25px rgba(56,189,248,0.18)",
+};
+
+const headingStyle = {
+  color: "#38bdf8",
+  marginBottom: "8px",
+};
+
+const subText = {
+  color: "#94a3b8",
+  marginBottom: "25px",
 };
 
 const inputStyle = {
@@ -138,10 +158,23 @@ const inputStyle = {
   boxSizing: "border-box",
 };
 
+const textareaStyle = {
+  ...inputStyle,
+  minHeight: "90px",
+  resize: "none",
+};
+
+const labelStyle = {
+  display: "block",
+  color: "#cbd5e1",
+  textAlign: "left",
+  marginBottom: "8px",
+};
+
 const fileInputStyle = {
   width: "100%",
   padding: "12px",
-  marginBottom: "15px",
+  marginBottom: "18px",
   borderRadius: "8px",
   border: "1px solid #475569",
   background: "#334155",

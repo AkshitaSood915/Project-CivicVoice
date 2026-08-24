@@ -1,7 +1,7 @@
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ function Dashboard() {
       await axios.put(`http://localhost:5000/api/issues/${id}`, { status });
       fetchIssues();
     } catch {
-      alert("Status update failed");
+      toast.error("Status update failed");
     }
   };
 
@@ -37,10 +37,10 @@ function Dashboard() {
 
     try {
       await axios.delete(`http://localhost:5000/api/issues/${id}`);
-      alert("Complaint deleted successfully");
+      toast.success("Complaint deleted successfully");
       fetchIssues();
     } catch {
-      alert("Delete failed");
+      toast.error("Delete failed");
     }
   };
 

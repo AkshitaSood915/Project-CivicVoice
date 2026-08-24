@@ -70,7 +70,7 @@ function Home() {
               Profile
             </button>
 
-            <button style={navTextBtn} onClick={() => navigate("/")}>
+            <button style={navTextBtn} onClick={() => navigate("/login")}>
               Login
             </button>
 
